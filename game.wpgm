@@ -1,0 +1,20 @@
+import wollok.game.*
+import personajes.*
+import correcaminos.*
+import vidaPersonajes.*
+import sonido.*
+import extra.*
+import niveles.*
+import ovejas.*
+
+program juego {
+              
+                 game.width(25)
+                 game.height(25)
+                 game.cellSize(50)
+                 game.title("JuegoCorrecaminos")
+                 game.boardGround("desierto2.jpg")
+                 //nivelFacil.iniciar()
+                 nivelMedio.iniciar()
+                 //nivelDificil.iniciar()
+}
