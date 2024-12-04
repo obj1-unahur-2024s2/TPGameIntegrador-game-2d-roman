@@ -19,12 +19,12 @@ object nivelFacil {
                game.addVisual(cazador)
                game.addVisual(granja)
                agregarOvejas.prepararRebanioNivel1()
-               cazador.empezarAPerseguir(450)
-               controlDeColisiones.config()
-               controlDeColisiones2.config()     
+               cazador.empezarAPerseguir(500)
+               controlDeCazador.config()
+               controlDeCorrecaminos.config()
                correcaminos.play()
                game.addVisual(correcaminos)
-               correcaminos.empezarAMover(450)
+               correcaminos.empezarAMover(350)
                game.start()
 
        }
@@ -45,11 +45,11 @@ object nivelMedio {
                game.addVisual(granja)
                agregarOvejas.prepararRebanioNivel2()
                cazador.empezarAPerseguir(350)
-               controlDeColisiones.config()
-               controlDeColisiones2.config()     
+               controlDeCazador.config()
+               controlDeCorrecaminos.config()   
                correcaminos.play()
                game.addVisual(correcaminos)
-               correcaminos.empezarAMover(350)
+               correcaminos.empezarAMover(250)
                game.start()
 
        }
@@ -68,10 +68,9 @@ object nivelDificil {
                agregarCorazones.nivel()
                game.addVisual(cazador)
                game.addVisual(granja)
-               agregarOvejas.prepararRebanioNivel2()
+               agregarOvejas.prepararRebanioNivel3()
                cazador.empezarAPerseguir(200)
-               controlDeColisiones.config()
-               controlDeColisiones2.config()     
+               controlDeCazador.config()   
                correcaminos.play()
                game.addVisual(correcaminos)
                correcaminos.empezarAMover(200)
@@ -94,12 +93,6 @@ object agregarCorazones {
 
               game.addVisual(corazonRojo4)
 
-              game.addVisual(corazonRojo5)
-
-              game.addVisual(corazonRojo6)
-
-              game.addVisual(corazonRojo7)
-
        }
 
 }
@@ -116,19 +109,15 @@ method prepararRebanioNivel1() {
     game.addVisual(ovejaDiagonal2)
     game.addVisual(ovejaDiagonal3)
 
-    controlDeColisiones3.config(ovejaRebotadora1)
-    controlDeColisiones3.config(ovejaRebotadora2)
-    controlDeColisiones3.config(ovejaRebotadora3)
-    controlDeColisiones3.config(ovejaDiagonal1)
-    controlDeColisiones3.config(ovejaDiagonal2)
-    controlDeColisiones3.config(ovejaDiagonal3)
-
     ovejaRebotadora1.accion(200)
     ovejaRebotadora2.accion(200)
     ovejaRebotadora3.accion(200)
     ovejaDiagonal1.accion(200)
     ovejaDiagonal2.accion(200)
     ovejaDiagonal3.accion(200)
+
+    controlDeOvejas2.config()
+    controlDeOvejas1.config()
 }
 
 
@@ -139,10 +128,6 @@ method prepararRebanioNivel2() {
     game.addVisual(ovejaDiagonal4)
     game.addVisual(ovejaDiagonal5)
 
-    controlDeColisiones3.config(ovejaRebotadora4)
-    controlDeColisiones3.config(ovejaRebotadora5)
-    controlDeColisiones3.config(ovejaDiagonal4)
-    controlDeColisiones3.config(ovejaDiagonal5)
 
     ovejaRebotadora4.accion(200)
     ovejaRebotadora5.accion(200)
@@ -155,15 +140,13 @@ method prepararRebanioNivel2() {
     game.addVisual(ovejaDiagonalEnvenenada1)
     game.addVisual(ovejaDiagonalEnvenenada2)
 
-    controlDeColisiones3.config(ovejaRebotadoraEnvenenada1)
-    controlDeColisiones3.config(ovejaRebotadoraEnvenenada2)
-    controlDeColisiones3.config(ovejaDiagonalEnvenenada1)
-    controlDeColisiones3.config(ovejaDiagonalEnvenenada2)
-
     ovejaRebotadoraEnvenenada1.accion(400)
     ovejaRebotadoraEnvenenada2.accion(400)
     ovejaDiagonalEnvenenada1.accion(400)
     ovejaDiagonalEnvenenada2.accion(400)
+
+    controlDeOvejas1.config()
+
 }
 
 
@@ -172,8 +155,6 @@ method prepararRebanioNivel3() {
     game.addVisual(ovejaRebotadora6)
     game.addVisual(ovejaDiagonal6)
 
-    controlDeColisiones3.config(ovejaRebotadora6)
-    controlDeColisiones3.config(ovejaDiagonal6)
 
     ovejaRebotadora6.accion(500)
     ovejaDiagonal6.accion(500)
@@ -185,12 +166,6 @@ method prepararRebanioNivel3() {
     game.addVisual(ovejaDiagonalEnvenenada4)
     game.addVisual(ovejaDiagonalEnvenenada5)
 
-    controlDeColisiones3.config(ovejaRebotadoraEnvenenada3)
-    controlDeColisiones3.config(ovejaRebotadoraEnvenenada4)
-    controlDeColisiones3.config(ovejaRebotadoraEnvenenada5)
-    controlDeColisiones3.config(ovejaDiagonalEnvenenada3)
-    controlDeColisiones3.config(ovejaDiagonalEnvenenada4)
-    controlDeColisiones3.config(ovejaDiagonalEnvenenada5)
 
     ovejaRebotadoraEnvenenada3.accion(600)
     ovejaRebotadoraEnvenenada4.accion(600)
@@ -198,6 +173,10 @@ method prepararRebanioNivel3() {
     ovejaDiagonalEnvenenada3.accion(600)
     ovejaDiagonalEnvenenada4.accion(600)
     ovejaDiagonalEnvenenada5.accion(600)
+
+    controlDeOvejas2.config()
+    controlDeOvejas1.config()
+
 }   
 
     method quitarTodasLasOvejas() {
@@ -258,4 +237,5 @@ method prepararRebanioNivel3() {
 
 
 }
+
 
