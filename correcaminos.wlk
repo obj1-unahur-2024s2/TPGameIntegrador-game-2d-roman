@@ -8,47 +8,33 @@ object correcaminos {
        
          var property position = game.at(22,0)
          
-         var property cantidadDeVidas = 1
-
          var dirImagen = ""
 
          method play() {
 
-               game.sound("mip.mp3").play()
+                game.sound("mip.mp3").play()
 
               }
 
+         method esCorreCaminos() = true 
 
-         method esCorrecaminos() = true    
+         method esCoyote() = false
+
+         method esOveja() = false   
          
          method morir() {
                 
-                self.perderVida()
+                game.clear()
 
                 game.addVisual(granja)
 
                 game.addVisual(correCaminosLose)
 
                 game.addVisual(ganador)
-                
-                agregarOvejas.quitarTodasLasOvejas()
-
-                game.removeVisual(self)
-
-                game.removeVisual(coyote)
-
-                game.removeVisual(cazador)
                
                 game.stop()
 
          }
-
-         method perderVida() {
-                
-                cantidadDeVidas = cantidadDeVidas - 1
-
-         }
-
 
          method image() {
 
@@ -103,23 +89,7 @@ object correcaminos {
 
     method escaparDeCoyote() {
 
-           self.correCaminosPerdio()
-
            self.escaparEnCoordenadasXY() 
-
-    }
-        
-    method correCaminosPerdio() {
-           
-           if (self.position() == coyote.position()) {
-
-               game.removeTickEvent("escaparDeCoyote")
-
-               game.removeVisual(coyote)
-
-               game.stop()
-
-            }
 
     }
 
@@ -846,7 +816,7 @@ object correcaminos {
 
 object correCaminosGanador {
 
-       var property position = game.at(10,6)
+       var property position = game.at(10,5)
 
        method image() {
 
