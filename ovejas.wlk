@@ -14,15 +14,26 @@ class Oveja {
               game.onTick(unaVelocidad,"Oveja",{self.desplazarse()})
 
        }
+
+       method esCoyote() {
+
+              return false
+
+       }
        
-       method esCorrecaminos() = false
+       method esCorreCaminos() = false
+
+       method esOveja() = true
 
        method milagroso() {
               
-              const probabilidades = talvez.seaCierto(70)
+              const probabilidades = talvez.seaCierto(50)
+
+              return probabilidades
               
        }
 
+       method envenenado() = false
 
        method morir() {
               
@@ -87,7 +98,13 @@ class OvejaRebotadora inherits Oveja {
 
       orientacion = orientacion.opuesto()
 
-    }
+      }
+
+      override method envenenado() {
+             
+             return false
+
+      }
 
 
 }
@@ -95,7 +112,7 @@ class OvejaRebotadora inherits Oveja {
 class OvejaRebotadoraEnvenenada inherits OvejaRebotadora {
       
 
-      method envenenado() {
+      override method envenenado() {
              
              const probabilidades = 0.randomUpTo(1)
              
@@ -106,7 +123,7 @@ class OvejaRebotadoraEnvenenada inherits OvejaRebotadora {
 
      override method milagroso() {
               
-              const probabilidades = talvez.seaCierto(0)
+              return false
 
      } 
 
@@ -180,12 +197,14 @@ class OvejaDiagonal inherits Oveja {
                   super()
              }
        }
+
+      override method envenenado() = false
 }
 
 
 class OvejaDiagonalEnvenenada inherits OvejaDiagonal {
       
-       method envenenado() {
+       override method envenenado() {
              
              const probabilidades = 0.randomUpTo(1)
              
@@ -196,7 +215,7 @@ class OvejaDiagonalEnvenenada inherits OvejaDiagonal {
 
      override method milagroso() {
               
-              const probabilidades = talvez.seaCierto(0)
+              return false
 
      } 
 
@@ -213,6 +232,17 @@ object granja {
               return "granja.png"
 
        } 
+
+       method esCoyote() {
+             
+             return false
+
+      }
+
+      method esCorreCaminos() = false
+
+      method esOveja() = false
+
 
 }
 
@@ -286,7 +316,7 @@ const ovejaRebotadora10 = new OvejaRebotadora(position = game.at(24,9))
 const ovejaRebotadora11 = new OvejaRebotadora(position = game.at(24,12))
 const ovejaRebotadora12 = new OvejaRebotadora(position = game.at(21,16))
 
-const ovejaDiagonal1 = new OvejaDiagonal(position = game.at(0,0))
+const ovejaDiagonal1 = new OvejaDiagonal(position = game.at(5,7))
 const ovejaDiagonal2 = new OvejaDiagonal(position = game.at(25,25))
 const ovejaDiagonal3 = new OvejaDiagonal(position = game.at(0,25))
 const ovejaDiagonal4 = new OvejaDiagonal(position = game.at(25,0))
