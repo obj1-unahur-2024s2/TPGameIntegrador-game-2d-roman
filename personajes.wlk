@@ -21,36 +21,84 @@ object config {
 }
 
 
-object controlDeColisiones {
+object controlDeCazador {
       
        method config() {
-              game.onCollideDo(cazador,{coyote => coyote.perderVidaOMorir()})  
+
+              game.onCollideDo(cazador,{objeto =>
+                      
+                      if (objeto.esCoyote()) {
+
+                          coyote.perderVidaOMorir()
+
+                      }
+
+                   })
        }
+
        
 }
 
-object controlDeColisiones2 {
+object controlDeCorrecaminos {
 
        method config() {
-              game.onCollideDo(coyote,{correcaminos => correcaminos.morir()}) 
+
+               game.onCollideDo(correcaminos,{objeto =>
+                    
+                      if (objeto.esCoyote()) {
+
+                          correcaminos.morir()
+
+                      }
+
+               })
+
        }
 
 }
 
-object controlDeColisiones3 {
 
-      method config(unAnimal) {
-             game.onCollideDo(unAnimal,{coyote => coyote.ganarOPerderVidaSegunAnimal(unAnimal)})
-             game.onCollideDo(unAnimal,{unAnimal => unAnimal.morir()})
+object controlDeOvejas1 {
+
+      method config() {
+ 
+
+             game.onCollideDo(coyote,{objeto =>
+             
+                  if (objeto.esOveja()) {
+                      
+                      objeto.morir()
+
+                  }
+
+             })           
       }
+}
 
+object controlDeOvejas2 {
+
+      method config() {
+ 
+
+             game.onCollideDo(coyote,{objeto =>
+             
+                  if (objeto.esOveja()) {
+                      
+                      coyote.ganarOPerderVidaSegunAnimal(objeto)
+
+                  }
+
+             })           
+      }
 }
 
  object coyote {
     
     var property position = game.origin()
     var property direccion = "D"
-    const cantidadDeCorazones = [corazonRojo,corazonRojo2,corazonRojo3,corazonRojo4,corazonRojo5,corazonRojo6,corazonRojo7] 
+    var property vida = 4
+    const property cantidadDeCorazonesRojos = [corazonRojo,corazonRojo2,corazonRojo3,corazonRojo4]
+    const property cantidadDeCorazonesNegros = [] 
     var seMovio = false
 
     method image() {
@@ -66,7 +114,6 @@ object controlDeColisiones3 {
 
            }
 
-
            else if (self.estaALaDerechaDe(correcaminos)) {
                    
                    return "coyoteAPuntoDeComerI.png"
@@ -81,6 +128,17 @@ object controlDeColisiones3 {
            }
                
        }
+
+
+    method esCoyote() {
+           
+           return true
+
+    }
+
+    method esCorreCaminos() = false
+
+    method esOveja() = false   
 
     method mensaje() {
            
@@ -156,16 +214,16 @@ object controlDeColisiones3 {
 
     method morir() {
            
-           if (self.cantidadDeCorazones() == 0) {
+           if (!self.sigueVivo()) {
                
-               self.gameOver1()
+               self.gameOver()
 
            }
     }
 
     method sigueVivo() {
           
-           return self.cantidadDeCorazones() > 0
+           return self.cantidadDeCorazonesRojos() > 0 and self.vida() > 0
 
     }
 
@@ -187,147 +245,176 @@ object controlDeColisiones3 {
      
     method ganarOPerderVidaSegunAnimal(unAnimal) {
             
-            if (unAnimal.envenenado() and self.sigueVivo() and !unAnimal.esCorrecaminos()) {
+            if (unAnimal.envenenado() and self.sigueVivo()) {
                 
                 self.perder2Vidas()
 
             }
 
-
-            else if (unAnimal.milagroso() and self.sigueVivo() and !unAnimal.esCorrecaminos()) {
-                
-                     if (self.faltanCurarDosCorazonesOMas()) {
-
-                         self.curarCorazonNegro()
-
-                         self.curarCorazonNegro()
+            else if (unAnimal.milagroso() and self.sigueVivo()) {
+                     
+                     if (self.tieneCorazonNegro()) {
+                            
+                            self.curarCorazonNegro()
 
                      }
-
 
                      else {
-
-                          self.ganar2Vidas()
+                          
+                            self.sumarVidaSiPuede()
+                            
+                            self.sumarVidaSiPuede()
 
                      }
 
-            }
-
-            else if (self.sigueVivo() and !unAnimal.esCorrecaminos()) {
-                   
-                   self.sumarVidaSiPuede()
-
+                    
             }
 
 
-            else {
-                  
-                  self.gameOver1()
+           else if (!unAnimal.milagroso() and self.sigueVivo()) {
+                     
+                    if (self.tieneCorazonNegro()) {
+                        
+                        self.curarCorazonNegro()
 
-            } 
+                    }
+
+
+                    else {
+                         
+                        self.sumarVidaSiPuede() 
+
+                    }
+
+            }
 
      }
 
       
-     method cantidadDeCorazones() {
+     method cantidadDeCorazonesRojos() {
             
-            return cantidadDeCorazones.size()
+            return cantidadDeCorazonesRojos.size()
 
      }
 
-     method faltanCurarDosCorazonesOMas() {
-            
-            return cantidadDeCorazones.filter({corazon => corazon.color() == "Negro"}).size() > 2
 
-     }
-     
      method curarCorazonNegro() {
             
-            if (self.tieneCorazonNegro() and self.encontrarCorazonNegro() == corazonNegro) {
+            if (self.tieneCorazonNegro(corazonNegro2)) {
                 
-                self.reemplazarCorazon(corazonNegro,corazonRojo)
+                vida = vida + 1
 
-            }
-
-            else if (self.tieneCorazonNegro() and self.encontrarCorazonNegro() == corazonNegro2) {
+                self.agregarCorazonRojo(corazonRojo2)
                 
-                self.reemplazarCorazon(corazonNegro2,corazonRojo2)
-
-            }
-
-            else if (self.tieneCorazonNegro() and self.encontrarCorazonNegro() == corazonNegro3) {
-                
-                self.reemplazarCorazon(corazonNegro3,corazonRojo3)
-
-            }
-
-            else if (self.tieneCorazonNegro() and self.encontrarCorazonNegro() == corazonNegro4) {
-                
-                self.reemplazarCorazon(corazonNegro4,corazonRojo4)
-
-            }
-
-            else if (self.tieneCorazonNegro() and self.encontrarCorazonNegro() == corazonNegro5) {
-                
-                self.reemplazarCorazon(corazonNegro5,corazonRojo5)
-
+                self.sacarCorazonNegro(corazonNegro2)
+                 
             }
 
 
-            else if (self.tieneCorazonNegro() and self.encontrarCorazonNegro() == corazonNegro6) {
+           else if (self.tieneCorazonNegro(corazonNegro3)) {
                 
-                self.reemplazarCorazon(corazonNegro6,corazonRojo6)
+                vida = vida + 1
 
-            }
+                self.agregarCorazonRojo(corazonRojo3)
 
-            else if (self.tieneCorazonNegro() and self.encontrarCorazonNegro() == corazonNegro7) {
+                self.sacarCorazonNegro(corazonNegro3)
+
+           }
+
+
+           
+           else if (self.tieneCorazonNegro(corazonNegro4)) {
+
+                vida = vida + 1
                 
-                self.reemplazarCorazon(corazonNegro7,corazonRojo7)
+                self.agregarCorazonRojo(corazonRojo4)
 
-            }
+                self.sacarCorazonNegro(corazonNegro4)
+
+           }
+
+           
+           else if (self.tieneCorazonNegro(corazonNegro5)) {
+
+                vida = vida + 1
+                
+                self.agregarCorazonRojo(corazonRojo5)
+
+                self.sacarCorazonNegro(corazonNegro5)
+
+           }
+
+           
+           else if (self.tieneCorazonNegro(corazonNegro6)) {
+
+                vida = vida + 1
+                
+                self.agregarCorazonRojo(corazonRojo6)
+
+                self.sacarCorazonNegro(corazonNegro6)
+
+           }
+
+           
+           else if (self.tieneCorazonNegro(corazonNegro7)) {
+
+                vida = vida + 1
+                
+                self.agregarCorazonRojo(corazonRojo7)
+
+                self.sacarCorazonNegro(corazonNegro7)
+
+           }
 
      }
 
-     method encontrarCorazonNegro() {
-            
-            return cantidadDeCorazones.find({corazon => corazon.color() == "Negro" })
-
-     }
 
      method tieneCorazonNegro() {
             
-            return cantidadDeCorazones.any({corazon => corazon.color() == "Negro"})
+            return !cantidadDeCorazonesNegros.isEmpty()
 
      }
 
-     method agregarCorazon(unCorazon) {
+     method tieneCorazonNegro(unCorazonNegro) {
+            
+            return cantidadDeCorazonesNegros.contains(unCorazonNegro)
+
+     }
+
+     method agregarCorazonRojo(unCorazon) {
             
             game.addVisual(unCorazon)
 
-            cantidadDeCorazones.add(unCorazon)
+            cantidadDeCorazonesRojos.add(unCorazon)
 
         }
 
 
-     method sacarCorazon(unCorazon) {
+     method sacarCorazonRojo(unCorazon) {
            
            game.removeVisual(unCorazon)
 
-           cantidadDeCorazones.remove(unCorazon)
+           cantidadDeCorazonesRojos.remove(unCorazon)
 
-    }
+        }
 
-     method reemplazarCorazon(corazonAReemplazar,corazonAPoner) {
+       method agregarCorazonNegro(unCorazon) {
             
-            game.removeVisual(corazonAReemplazar)
+            game.addVisual(unCorazon)
 
-            cantidadDeCorazones.remove(corazonAReemplazar)
+            cantidadDeCorazonesNegros.add(unCorazon)
 
-            game.addVisual(corazonAPoner)
+        }
 
-            cantidadDeCorazones.add(corazonAPoner)
+
+     method sacarCorazonNegro(unCorazon) {
            
-     }
+           game.removeVisual(unCorazon)
+
+           cantidadDeCorazonesNegros.remove(unCorazon)
+
+        }   
+
      
      method ganar2Vidas() {
             
@@ -339,23 +426,29 @@ object controlDeColisiones3 {
 
      method sumarVidaSiPuede() {
             
-            if (self.cantidadDeCorazones() == 4 and !self.tieneCorazonNegro()) {
+            if (self.cantidadDeCorazonesRojos() == 4 and !self.tieneCorazonNegro()) {
                 
-                self.agregarCorazon(corazonRojo5)
+                vida = vida + 1
+
+                self.agregarCorazonRojo(corazonRojo5)
 
             }
 
 
-            else if (self.cantidadDeCorazones() == 5 and !self.tieneCorazonNegro()) {
+            else if (self.cantidadDeCorazonesRojos() == 5 and !self.tieneCorazonNegro()) {
                  
-                 self.agregarCorazon(corazonRojo6)
+                 vida = vida + 1
+
+                 self.agregarCorazonRojo(corazonRojo6)
 
             }
 
 
-            else if (self.cantidadDeCorazones() == 6 and !self.tieneCorazonNegro()) {
+            else if (self.cantidadDeCorazonesRojos() == 6 and !self.tieneCorazonNegro()) {
                  
-                 self.agregarCorazon(corazonRojo7)
+                 vida = vida + 1
+
+                 self.agregarCorazonRojo(corazonRojo7)
 
             }
 
@@ -372,75 +465,84 @@ object controlDeColisiones3 {
 
      method perderVida() {
             
-            if (self.cantidadDeCorazones() == 7) {
+            if (self.vida() == 7) {
+                
+                vida = vida - 1
 
-                self.sacarCorazon(corazonRojo7)
+                self.sacarCorazonRojo(corazonRojo7)
 
-                game.addVisual(corazonNegro7)
+                self.agregarCorazonNegro(corazonNegro7) 
 
             }
 
 
-           else if (self.cantidadDeCorazones() == 6) {
-                
-                self.sacarCorazon(corazonRojo6)
+           else if (self.vida() == 6) {
 
-                game.addVisual(corazonNegro6)
+                vida = vida - 1
+                
+                self.sacarCorazonRojo(corazonRojo6)
+
+                self.agregarCorazonNegro(corazonNegro6) 
 
            }
 
-           else if (self.cantidadDeCorazones() == 5) {
+           else if (self.vida() == 5) {
                 
-                self.sacarCorazon(corazonRojo5)
+                vida = vida - 1
 
-                game.addVisual(corazonNegro5) 
+                self.sacarCorazonRojo(corazonRojo5)
+
+                self.agregarCorazonNegro(corazonNegro5) 
 
 
            } 
 
-           else if (self.cantidadDeCorazones() == 4) {
+           else if (self.vida() == 4) {
                 
-                self.sacarCorazon(corazonRojo4)
+                vida = vida - 1
 
-                game.addVisual(corazonNegro4) 
+                self.sacarCorazonRojo(corazonRojo4)
+
+                self.agregarCorazonNegro(corazonNegro4) 
  
            } 
+           
+           else if (self.vida() == 3) {
 
-           else if (self.cantidadDeCorazones() == 3) {
-                
-                self.sacarCorazon(corazonRojo3)
+                vida = vida - 1
+
+                self.sacarCorazonRojo(corazonRojo3)
               
-                game.addVisual(corazonNegro3)
+                self.agregarCorazonNegro(corazonNegro3) 
            } 
 
-           else if (self.cantidadDeCorazones() == 2) {
+           else if (self.vida() == 2) {
                 
-                self.sacarCorazon(corazonRojo2)
+                vida = vida - 1
+
+                self.sacarCorazonRojo(corazonRojo2)
                
-                game.addVisual(corazonNegro2)
+                self.agregarCorazonNegro(corazonNegro2) 
            }
 
 
-           else if (self.cantidadDeCorazones() == 1) {
+           else if (self.vida() == 1) {
                 
-                self.sacarCorazon(corazonRojo)
+                vida = vida - 1
+
+                self.sacarCorazonNegro(corazonRojo)
                
-                game.addVisual(corazonNegro)
+                self.agregarCorazonNegro(corazonNegro)
+
            }   
 
      }
 
-     method gameOver1() {
+     method gameOver() {
+
+            game.clear()
             
-            agregarOvejas.quitarTodasLasOvejas()
-
             game.addVisual(coyotePerdio)
-
-            game.removeVisual(self)
-
-            game.removeVisual(cazador)
-
-            game.removeVisual(correcaminos)
 
             game.addVisual(correCaminosGanador)
 
@@ -524,7 +626,7 @@ object controlDeColisiones3 {
 
 object coyotePerdio {
 
-       const property position = game.at(10,16)
+       const property position = game.at(9,15)
 
        method image() = "coyotePerdio.png" 
 
@@ -561,7 +663,11 @@ class Cazador {
 
       }
       
-      method esCorrecaminos() = false
+      method esOveja() = false
+      
+      method esCoyote() = false
+
+      method esCorreCaminos() = false
 
       method empezarAPerseguir(velocidad) {
              
@@ -661,4 +767,3 @@ object talvez {
 }
 
 const cazador = new Cazador()
-
